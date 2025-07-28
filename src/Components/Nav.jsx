@@ -1,11 +1,14 @@
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import logo from '../assets/logo2.png'
-import { Profiler, useContext } from 'react';
+import { Profiler, useContext, useState } from 'react';
 import { FaUser } from 'react-icons/fa';
+import { IoClose, IoMenu } from "react-icons/io5";
+
 import { AuthContext } from '../provider/AuthProvider';
 const Nav = () => {
     const { user, logOut } = useContext(AuthContext);
     const location = useLocation();
+    const [toggle, setToggle] = useState(false);
     return (
         <nav className="bg-white shadow-md px-6 py-4">
             <div className="flex items-center justify-between max-w-7xl mx-auto">
@@ -291,7 +294,92 @@ const Nav = () => {
                             </li>
                     }
                 </ul>
+
+                {/* reasponsive code */}
+                <div onClick={() => setToggle(!toggle)} className='lg:hidden'>
+                    {
+                        toggle ?
+                            <IoClose className='text-3xl text-blue-800 hover:text-blue-500'></IoClose>
+                            :
+                            <IoMenu className='text-3xl text-blue-800 hover:text-blue-500'></IoMenu>
+                    }
+                </div>
             </div>
+            {
+                toggle &&
+                <div className='w-full'>
+
+                    <ul>
+                        {
+                        user ?
+
+                            <li className="relative group cursor-pointer flex items-center justify-center">
+                                <div className="hover:text-blue-600 flex items-center justify-center">
+                                    <FaUser></FaUser>
+                                </div>
+
+                                <span className='hidden group-hover:flex absolute top-5 bg-white p-1 shadow-sm rounded-lg flex flex-col min-w-max px-3 absolute -right-7'>
+
+                                    <div>
+                                        <faUser></faUser>
+                                        <h2>{user.displayName}</h2>
+                                    </div>
+
+                                    <hr />
+
+                                    <Link className='hover:text-blue-600'>
+                                        Saved Home
+                                    </Link>
+                                    <Link className='hover:text-blue-600'>
+                                        Saved Searches
+                                    </Link>
+                                    <Link className='hover:text-blue-600'>
+                                        Inbox
+                                    </Link>
+                                    <Link className='hover:text-blue-600'>
+                                        Manage Tour
+                                    </Link>
+                                    <Link className='hover:text-blue-600'>
+                                        Recently Viewed
+                                    </Link>
+                                    <Link className='hover:text-blue-600'>
+                                        Your Team
+                                    </Link>
+                                    <Link className='hover:text-blue-600'>
+                                        Your Home
+                                    </Link>
+                                    <Link className='hover:text-blue-600'>
+                                        Renter Hub
+                                    </Link>
+                                    <Link className='hover:text-blue-600'>
+                                        Account Settings
+                                    </Link>
+
+                                    <hr />
+
+                                    <Link onClick={() => {
+                                        logOut()
+                                            .then(() => {
+                                                console.log('SignOut successfull');
+                                            })
+                                            .catch(error => {
+                                                console.log(error);
+                                            })
+                                    }} to={'/login'} state={location.pathname} className="hover:text-blue-600">LogOut</Link>
+                                </span>
+
+                            </li>
+                            :
+
+                            < li className="relative group cursor-pointer">
+                                <Link to={'/login'} state={location.pathname} className="hover:text-blue-600">Login</Link>
+                                {/* You can add dropdown here if needed */}
+                            </li>
+                    }
+                    </ul>
+
+                </div>
+            }
         </nav >
     );
 };
